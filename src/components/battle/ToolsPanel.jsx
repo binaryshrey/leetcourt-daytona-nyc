@@ -1,50 +1,99 @@
-import React from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FileText, Folder, Scale } from "lucide-react";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import React, { useState } from "react";
+import { FileText, Folder, Scale, Sparkles } from "lucide-react";
 
-export default function ToolsPanel({ caseData }) {
+export default function ToolsPanel({ caseData, battleData }) {
+  const [activeTab, setActiveTab] = useState("notes");
+
+  const displayNotes = (battleData?.battle_notes && battleData.battle_notes.trim() !== '') 
+    ? battleData.battle_notes 
+    : caseData?.notes || '';
+  
+  const displayEvidence = (battleData?.battle_evidence && battleData.battle_evidence.length > 0)
+    ? battleData.battle_evidence 
+    : caseData?.evidence || [];
+  
+  const displayPrecedents = (battleData?.battle_precedents && battleData.battle_precedents.length > 0)
+    ? battleData.battle_precedents 
+    : caseData?.precedents || [];
+  
+  const hasAIInsights = battleData?.insights_last_updated;
+
+  if (!caseData) {
+    return <div className="bg-[#1a1f3a]/50 rounded-lg border border-[#d4af37]/20 p-4 text-gray-400">Loading case data...</div>;
+  }
+
   return (
     <div className="bg-[#1a1f3a]/50 rounded-lg border border-[#d4af37]/20 overflow-hidden">
-      <Tabs defaultValue="notes" className="w-full">
-        <TabsList className="w-full grid grid-cols-3 bg-[#151a2e] border-b border-[#d4af37]/20">
-          <TabsTrigger value="notes" className="data-[state=active]:bg-[#d4af37]/20">
-            <FileText className="w-4 h-4 mr-2" />
-            <span className="hidden sm:inline">Notes</span>
-          </TabsTrigger>
-          <TabsTrigger value="evidence" className="data-[state=active]:bg-[#d4af37]/20">
-            <Folder className="w-4 h-4 mr-2" />
-            <span className="hidden sm:inline">Evidence</span>
-          </TabsTrigger>
-          <TabsTrigger value="precedents" className="data-[state=active]:bg-[#d4af37]/20">
-            <Scale className="w-4 h-4 mr-2" />
-            <span className="hidden sm:inline">Precedent</span>
-          </TabsTrigger>
-        </TabsList>
+      {/* Tab Headers */}
+      <div className="w-full grid grid-cols-3 bg-[#151a2e] border-b border-[#d4af37]/20">
+        <button
+          onClick={() => setActiveTab("notes")}
+          className={`inline-flex items-center justify-center px-3 py-3 text-sm font-medium transition-all ${
+            activeTab === "notes" ? "bg-[#d4af37]/20 text-[#d4af37]" : "text-gray-400 hover:text-gray-300"
+          }`}
+        >
+          <FileText className="w-4 h-4 mr-2" />
+          <span className="hidden sm:inline">Notes</span>
+        </button>
+        <button
+          onClick={() => setActiveTab("evidence")}
+          className={`inline-flex items-center justify-center px-3 py-3 text-sm font-medium transition-all ${
+            activeTab === "evidence" ? "bg-[#d4af37]/20 text-[#d4af37]" : "text-gray-400 hover:text-gray-300"
+          }`}
+        >
+          <Folder className="w-4 h-4 mr-2" />
+          <span className="hidden sm:inline">Evidence</span>
+        </button>
+        <button
+          onClick={() => setActiveTab("precedents")}
+          className={`inline-flex items-center justify-center px-3 py-3 text-sm font-medium transition-all ${
+            activeTab === "precedents" ? "bg-[#d4af37]/20 text-[#d4af37]" : "text-gray-400 hover:text-gray-300"
+          }`}
+        >
+          <Scale className="w-4 h-4 mr-2" />
+          <span className="hidden sm:inline">Precedent</span>
+        </button>
+      </div>
 
-        <ScrollArea className="h-64">
-          <TabsContent value="notes" className="p-4 space-y-3">
+      {/* Tab Content */}
+      <div className="p-4 space-y-3 h-64 overflow-y-auto">
+        {activeTab === "notes" && (
+          <>
+            {hasAIInsights && (
+              <div className="flex items-center gap-2 px-2 py-1.5 bg-purple-500/10 border border-purple-400/30 rounded-md mb-3">
+                <Sparkles className="w-3 h-3 text-purple-400" />
+                <p className="text-[10px] text-purple-300 uppercase tracking-wide">AI-Generated Insights</p>
+              </div>
+            )}
             <div>
               <h4 className="text-sm font-semibold text-[#d4af37] mb-2">Strategic Notes</h4>
-              <p className="text-xs text-gray-300 leading-relaxed mb-3">
-                {caseData?.notes || "No strategic notes available."}
+              <p className="text-xs text-gray-300 leading-relaxed mb-3 whitespace-pre-wrap">
+                {displayNotes || "No strategic notes available."}
               </p>
             </div>
             <div className="pt-2 border-t border-[#d4af37]/20">
               <h4 className="text-sm font-semibold text-[#d4af37] mb-2">Case Facts</h4>
-              <p className="text-xs text-gray-300 leading-relaxed">
+              <p className="text-xs text-gray-300 leading-relaxed whitespace-pre-wrap">
                 {caseData?.facts || "No case facts available."}
               </p>
             </div>
-          </TabsContent>
+          </>
+        )}
 
-          <TabsContent value="evidence" className="p-4 space-y-3">
-            {caseData?.evidence?.length > 0 ? (
+        {activeTab === "evidence" && (
+          <>
+            {hasAIInsights && displayEvidence.length > 0 && (
+              <div className="flex items-center gap-2 px-2 py-1.5 bg-purple-500/10 border border-purple-400/30 rounded-md mb-3">
+                <Sparkles className="w-3 h-3 text-purple-400" />
+                <p className="text-[10px] text-purple-300 uppercase tracking-wide">AI-Generated Insights</p>
+              </div>
+            )}
+            {displayEvidence.length > 0 ? (
               <>
                 <div className="mb-2">
-                  <p className="text-xs text-gray-500 uppercase tracking-wide">Available Evidence ({caseData.evidence.length})</p>
+                  <p className="text-xs text-gray-500 uppercase tracking-wide">Available Evidence ({displayEvidence.length})</p>
                 </div>
-                {caseData.evidence.map((item, index) => (
+                {displayEvidence.map((item, index) => (
                   <div
                     key={index}
                     className="p-3 bg-[#151a2e] rounded-lg border border-[#4a90e2]/30 hover:border-[#4a90e2]/50 transition-colors"
@@ -56,6 +105,9 @@ export default function ToolsPanel({ caseData }) {
                       </span>
                     </div>
                     <p className="text-xs text-gray-400 leading-relaxed">{item.content}</p>
+                    {item.relevance && (
+                      <p className="text-[10px] text-purple-400 mt-1 italic">Relevance: {item.relevance}</p>
+                    )}
                   </div>
                 ))}
               </>
@@ -65,15 +117,23 @@ export default function ToolsPanel({ caseData }) {
                 <p className="text-xs text-gray-400">No evidence available.</p>
               </div>
             )}
-          </TabsContent>
+          </>
+        )}
 
-          <TabsContent value="precedents" className="p-4 space-y-3">
-            {caseData?.precedents?.length > 0 ? (
+        {activeTab === "precedents" && (
+          <>
+            {hasAIInsights && displayPrecedents.length > 0 && (
+              <div className="flex items-center gap-2 px-2 py-1.5 bg-purple-500/10 border border-purple-400/30 rounded-md mb-3">
+                <Sparkles className="w-3 h-3 text-purple-400" />
+                <p className="text-[10px] text-purple-300 uppercase tracking-wide">AI-Generated Insights</p>
+              </div>
+            )}
+            {displayPrecedents.length > 0 ? (
               <>
                 <div className="mb-2">
-                  <p className="text-xs text-gray-500 uppercase tracking-wide">Relevant Case Law ({caseData.precedents.length})</p>
+                  <p className="text-xs text-gray-500 uppercase tracking-wide">Relevant Case Law ({displayPrecedents.length})</p>
                 </div>
-                {caseData.precedents.map((precedent, index) => (
+                {displayPrecedents.map((precedent, index) => (
                   <div
                     key={index}
                     className="p-3 bg-[#151a2e] rounded-lg border border-[#10b981]/30 hover:border-[#10b981]/50 transition-colors"
@@ -91,9 +151,9 @@ export default function ToolsPanel({ caseData }) {
                 <p className="text-xs text-gray-400">No precedents listed.</p>
               </div>
             )}
-          </TabsContent>
-        </ScrollArea>
-      </Tabs>
+          </>
+        )}
+      </div>
     </div>
   );
 }

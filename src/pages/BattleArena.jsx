@@ -13,6 +13,7 @@ import ScoreTracker from "@/components/battle/ScoreTracker";
 import CaseTimeline from "@/components/battle/CaseTimeline";
 import ToolsPanel from "@/components/battle/ToolsPanel";
 import { analyzeUserPerformance, analyzeAIStrategy } from "@/utils/performanceAnalyzer";
+import { generateBattleInsights } from "@/utils/battleAnalyzer";
 
 const STAGE_CONFIGS = {
   opening: {
@@ -98,6 +99,7 @@ export default function BattleArena() {
   const [stageTurnCount, setStageTurnCount] = useState(0);
   const [canAdvanceStage, setCanAdvanceStage] = useState(false);
   const [userTurnCount, setUserTurnCount] = useState(0);
+  const [generatingInsights, setGeneratingInsights] = useState(false);
   const scrollRef = useRef(null);
   const conversationHistoryRef = useRef([]);
   const lastAnalysisRef = useRef(0);
@@ -263,12 +265,50 @@ export default function BattleArena() {
     };
   }, [currentCase, currentBattle, stageTurnCount]);
 
+  // Generate AI insights from conversation transcript
+  const generateInsights = async () => {
+    if (!currentCase || !currentBattle || transcript.length < 6) {
+      return; // Need at least 3 exchanges to analyze
+    }
 
+    try {
+      setGeneratingInsights(true);
+      
+      const insights = await generateBattleInsights(currentCase, transcript);
+      
+      if (insights) {
+        // Update battle with AI-generated insights
+        await api.entities.Battle.update(currentBattle.id, {
+          battle_notes: insights.notes,
+          battle_evidence: insights.evidence,
+          battle_precedents: insights.precedents,
+          insights_last_updated: new Date().toISOString()
+        });
+
+        // Update local battle state
+        setCurrentBattle(prev => ({
+          ...prev,
+          battle_notes: insights.notes,
+          battle_evidence: insights.evidence,
+          battle_precedents: insights.precedents,
+          insights_last_updated: new Date().toISOString()
+        }));
+      }
+    } catch (error) {
+      console.error('Failed to generate insights:', error);
+    } finally {
+      setGeneratingInsights(false);
+    }
+  };
 
   const initializeBattle = async (caseData) => {
     const battle = await api.entities.Battle.create({
       case_id: caseData.id,
       stage: "opening",
+      battle_notes: "",
+      battle_evidence: [],
+      battle_precedents: [],
+      insights_last_updated: null
     });
     setCurrentBattle(battle);
     setStageTurnCount(0);
@@ -639,6 +679,11 @@ Detect finish_phase if user says "that's all your honor", "no further questions"
     // Analyze AI strategy
     const strategy = analyzeAIStrategy(aiText);
     setAiStrategy(strategy);
+
+    // Generate insights every 5 conversation turns (10 messages total)
+    if (transcript.length > 0 && (transcript.length + 1) % 10 === 0) {
+      setTimeout(() => generateInsights(), 2000);
+    }
   };
 
   const analyzeArgumentQuality = (argument) => {
@@ -908,7 +953,14 @@ Detect finish_phase if user says "that's all your honor", "no further questions"
       <div className="grid lg:grid-cols-3 gap-4">
         {/* Left: Case Tools */}
         <div className="lg:col-span-1 space-y-4">
-          <ToolsPanel caseData={currentCase} />
+          <ToolsPanel caseData={currentCase} battleData={currentBattle} />
+          
+          {generatingInsights && (
+            <div className="bg-purple-500/10 border border-purple-400/30 rounded-lg p-3 flex items-center gap-2">
+              <div className="animate-spin rounded-full h-4 w-4 border-2 border-purple-400 border-t-transparent"></div>
+              <p className="text-xs text-purple-300">Generating AI insights from conversation...</p>
+            </div>
+          )}
         </div>
 
         {/* Center: Voice AI Interface */}
