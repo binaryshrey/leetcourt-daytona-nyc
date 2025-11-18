@@ -1,0 +1,10 @@
+reviews:
+  enable: true
+  summarize: true
+  path_filters:
+    - "src/**"
+    - "app/**"
+  auto_review_on:
+    - pull_request_opened
+    - pull_request_synchronized
+  severity_threshold: medium
