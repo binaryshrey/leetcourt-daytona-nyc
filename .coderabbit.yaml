@@ -1,10 +1,33 @@
 reviews:
   enable: true
   summarize: true
+  review_status: true # keeps the "review status" check/comment
+
+  # Only files matching these patterns will be reviewed.
+  # (Default blocked paths like dist/, build/, node_modules/ still stay blocked
+  # unless you explicitly add them here.)
   path_filters:
+    # Main app source
     - "src/**"
-    - "app/**"
+
+    # Static assets & HTML entrypoint
+    - "public/**"
+    - "index.html"
+
+    # Deployment / routing config
+    - "vercel.json"
+
+    # Repo-wide code/config files you may add later
+    - "**/*.js"
+    - "**/*.jsx"
+    - "**/*.ts"
+    - "**/*.tsx"
+    - "**/*.json"
+    - "**/*.md"
+    - ".coderabbit.yaml"
+
   auto_review_on:
     - pull_request_opened
     - pull_request_synchronized
+
   severity_threshold: medium
