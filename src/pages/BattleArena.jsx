@@ -12,6 +12,7 @@ import JudgeReaction from "@/components/battle/JudgeReaction";
 import ScoreTracker from "@/components/battle/ScoreTracker";
 import CaseTimeline from "@/components/battle/CaseTimeline";
 import ToolsPanel from "@/components/battle/ToolsPanel";
+import DaytonaButton from "@/components/DaytonaButton";
 import { analyzeUserPerformance, analyzeAIStrategy } from "@/utils/performanceAnalyzer";
 import { generateBattleInsights } from "@/utils/battleAnalyzer";
 
@@ -298,6 +299,32 @@ export default function BattleArena() {
       console.error('Failed to generate insights:', error);
     } finally {
       setGeneratingInsights(false);
+    }
+  };
+
+  // Handle insights from Daytona sandbox analysis
+  const handleDaytonaInsights = async (insights) => {
+    if (!currentBattle) return;
+
+    try {
+      // Update battle with Daytona-generated insights
+      await api.entities.Battle.update(currentBattle.id, {
+        battle_notes: insights.notes,
+        battle_evidence: insights.evidence,
+        battle_precedents: insights.precedents,
+        insights_last_updated: new Date().toISOString()
+      });
+
+      // Update local battle state
+      setCurrentBattle(prev => ({
+        ...prev,
+        battle_notes: insights.notes,
+        battle_evidence: insights.evidence,
+        battle_precedents: insights.precedents,
+        insights_last_updated: new Date().toISOString()
+      }));
+    } catch (error) {
+      console.error('Failed to update battle with Daytona insights:', error);
     }
   };
 
@@ -954,6 +981,15 @@ Detect finish_phase if user says "that's all your honor", "no further questions"
         {/* Left: Case Tools */}
         <div className="lg:col-span-1 space-y-4">
           <ToolsPanel caseData={currentCase} battleData={currentBattle} />
+          
+          {/* Daytona Sandbox Integration */}
+          {currentCase && (
+            <DaytonaButton 
+              caseData={currentCase} 
+              onInsightsGenerated={handleDaytonaInsights}
+              variant="outline" 
+            />
+          )}
           
           {generatingInsights && (
             <div className="bg-purple-500/10 border border-purple-400/30 rounded-lg p-3 flex items-center gap-2">
