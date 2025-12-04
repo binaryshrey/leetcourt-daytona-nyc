@@ -1,28 +1,135 @@
-# LeetCourt 
+# LeetCourt
 
-Master the Art of Argument - An interactive courtroom simulation powered by AI voice agents.
+Master the Art of Argument – An interactive courtroom simulation powered by AI voice agents.
 
-🌐 **Live Demo:** [leetcourt.tech](https://leetcourt-ayushs2k1s-projects.vercel.app)
+🌐 **Live Demo:** [LeetCourt](https://luminous-fox-3d91e8.netlify.app)
+
+![Leetcourt](https://raw.githubusercontent.com/binaryshrey/leetcourt-daytona-nyc/refs/heads/main/leetcourt.png)
+
+---
+
+## Inspiration
+
+Legal argumentation is a skill that traditionally requires in-person training, expert feedback, and structured courtroom environments—none of which are easily accessible to most students or professionals. Despite AI tools for writing and research, there is no platform that allows users to practice real-time courtroom reasoning, face objections, or learn procedural flow in a fun and engaging way.
+
+We wanted to build something like **LeetCode for legal reasoning**: a place where anyone can practice arguments, improve rhetorical clarity, and simulate real trial pressure with an AI judge that behaves like the real thing.
+
+---
+
+## What it does
+
+LeetCourt is an AI-driven, voice-interactive courtroom simulator that allows users to:
+
+- Conduct realistic Opening, Direct, Cross, and Closing phases.
+- Face live objections such as Relevance, Hearsay, Speculation, and Leading.
+- Upload any PDF case file and have an AI extract facts, evidence, and precedents.
+- Receive performance analysis at the end of the game.
+- Track clarity, logic, persuasiveness, and precedent usage.
+- Interact with a fully voice-enabled multi-agent AI judge, Lawyer, and Orchestrator built using **ElevenLabs Conversational AI**.
+- Access an integrated tools panel with evidence, notes, and case summaries.
+- Create secure, isolated development sandboxes for AI-powered legal case analysis using **Daytona.io**.
+- Receive automated code reviews and logic checks for scoring engine and agent scripts via **CodeRabbit**.
+
+---
 
 ## Features
 
 - 🎙️ **Voice AI Integration**: Practice arguments with ElevenLabs Conversational AI Judge
 - 🔄 **Automatic Phase Progression**: Seamlessly move through Opening → Direct → Cross → Closing
-- 🤖 **AI-Powered Battle Insights**: GPT-4o analyzes your conversation and generates dynamic notes, evidence, and precedents
-- 📄 **PDF Case Upload**: Extract case information from PDFs using Openrouter (GPT-5)
-- ⚖️ **Real-time Performance Analysis**: Get AI-powered feedback on your arguments
+- 🤖 **AI-Powered Battle Insights**: GPT-4o analyzes conversations and generates dynamic notes, evidence, and precedents
+- 📄 **PDF Case Upload**: Extract case information from PDFs using OpenRouter (GPT-5.1)
+- ⚖️ **Real-time Performance Analysis**: Get AI-powered feedback on your arguments every few seconds
 - 📚 **Case Library**: Browse and filter cases by type and difficulty
 - 🎯 **Dynamic Context**: Case details automatically loaded into AI agents
 - 📝 **Smart Tools Panel**: View AI-generated battle insights alongside case defaults
 
+---
+
 ## Tech Stack
 
-- React 18.3 + Vite 5.4
-- TailwindCSS + Shadcn UI
-- ElevenLabs Conversational AI
-- OpenRouter API (Claude 3.5 Sonnet, GPT-5.1)
-- PDF.js for document parsing
-- LocalStorage for data persistence
+- **Frontend**: React 18.3 + Vite 5.4
+- **UI**: TailwindCSS + Shadcn UI
+- **Voice AI**: ElevenLabs Conversational AI
+- **LLM & AI**: OpenRouter API (Claude 3.5 Sonnet, GPT-5.1, GPT-4o)
+- **PDF Processing**: PDF.js
+- **Storage**: LocalStorage & Tigris Storage
+- **Development Tools**: Daytona.io (sandbox), CodeRabbit (code review)
+
+---
+
+## How we built it
+
+### Frontend & UI
+
+- React 18.3 + Vite for fast rendering
+- TailwindCSS + Shadcn UI for consistent, modern design
+
+### AI Systems
+
+- **ElevenLabs Conversational AI** – judge, lawyer, orchestrator, and user voice interaction
+- **OpenRouter (GPT-5.1)** – PDF case extraction, performance feedback, reasoning logic
+- **Daytona.io** – isolated AI development sandboxes
+- **CodeRabbit** – automated code review, scoring logic validation
+- **Tigris Storage** – storing legal case documents
+
+### Data Processing
+
+- pdf.js for unstructured text extraction
+- JSON-normalized case structure for AI agents
+
+### Architecture
+
+- Deterministic **Finite State Machine** manages trial phases
+- Reactive scoring engine evaluates arguments at fixed intervals
+- Voice pipeline manages streaming input/output from judge
+
+---
+
+## Challenges we ran into
+
+- **Latency management:** syncing real-time speech with LLM responses
+- **Maintaining judge consistency:** procedural, strict, and predictable AI behavior
+- **Handling messy PDFs:** irregular documents required preprocessing
+- **Conversation drift:** FSM essential for structured trial flow
+- **Integrating multiple models:** careful orchestration to avoid context conflicts
+
+---
+
+## Accomplishments
+
+- Fully voice-interactive courtroom simulator with realistic objections
+- Dynamic PDF-to-case extraction pipeline
+- Real-time scoring engine analyzing arguments every 3 seconds
+- Clean, intuitive UI mirroring professional trial environments
+- Flexible case library with search, filtering, uploading, and deletion
+- Scalable architecture supporting new agents, case types, and multiplayer
+- Leveraged Daytona.io for secure AI case analysis sandboxes
+- CodeRabbit automated code review and logic checks
+- Tigris Storage for real-time courtroom practice
+
+---
+
+## What we learned
+
+- Real-time voice interactions require buffering, flow control, and architectural discipline
+- Legal reasoning benefits from structured FSM trial management
+- Narrow-function LLMs (judge, analyzer, extractor) perform best
+- UX matters: pacing, clarity, and visual anchors improve realism
+- High-quality prompts aren’t enough—environment design is critical
+
+---
+
+## What's next
+
+- Multiplayer Mode: human vs AI or human vs human with AI judge
+- Mobile App for on-the-go practice
+- Community Case Marketplace
+- Institutional versions for law schools, debate clubs, training programs
+- Advanced scoring models that learn from user patterns
+- Analytics dashboard for improvement tracking
+- Scenario-based learning tracks: Criminal Law, Torts, Contracts, Evidence, Constitutional Law
+
+---
 
 ## Getting Started
 
@@ -35,36 +142,27 @@ Master the Art of Argument - An interactive courtroom simulation powered by AI v
 
 ### Installation
 
-1. Clone the repository:
 ```bash
-git clone <your-repo-url>
+git clone <https://github.com/binaryshrey/leetcourt-daytona-nyc>
 cd leetcourt
-```
-
-2. Install dependencies:
-```bash
 npm install
 ```
 
-3. Create `.env` file:
+Create `.env` and add your OpenRouter API key:
 
-4. Add your OpenRouter API key to `.env`:
 ```
 VITE_OPENROUTER_API_KEY=your-actual-key-here
 ```
 
-5. Start development server:
+Start development server:
+
 ```bash
 npm run dev
 ```
 
-Visit `http://localhost:3000` to see the app!
+Visit [http://localhost:3000](http://localhost:3000)
 
-## Deployment
-
-Deployed on **Vercel** at [leetcourt.tech](https://leetcourt-ayushs2k1s-projects.vercel.app)
-
-### Deploy Your Own Instance
+### Deployment
 
 ```bash
 npm install -g vercel
@@ -72,7 +170,10 @@ vercel --prod
 ```
 
 Configure environment variables in Vercel Dashboard:
-- `VITE_OPENROUTER_API_KEY` - Your OpenRouter API key
+
+- `VITE_OPENROUTER_API_KEY` – OpenRouter API key
+
+---
 
 ## Project Structure
 
@@ -80,84 +181,28 @@ Configure environment variables in Vercel Dashboard:
 leetcourt/
 ├── src/
 │   ├── components/
-│   │   ├── battle/              # Courtroom UI components
-│   │   │   ├── ToolsPanel.jsx   # Notes, Evidence, Precedents viewer
-│   │   │   ├── ScoreTracker.jsx # Performance score display
-│   │   │   ├── CaseTimeline.jsx # Trial phase timeline
-│   │   │   └── JudgeReaction.jsx # Objection modal
-│   │   ├── CaseUploader.jsx     # PDF drag-and-drop uploader
-│   │   └── ui/                  # Shadcn UI components
+│   │   ├── battle/
+│   │   │   ├── ToolsPanel.jsx
+│   │   │   ├── ScoreTracker.jsx
+│   │   │   ├── CaseTimeline.jsx
+│   │   │   └── JudgeReaction.jsx
+│   │   ├── CaseUploader.jsx
+│   │   └── ui/
 │   ├── pages/
-│   │   ├── BattleArena.jsx      # Main courtroom interface
-│   │   ├── CaseLibrary.jsx      # Case browsing & management
-│   │   ├── Leaderboard.jsx      # User rankings
-│   │   └── Profile.jsx          # User profile
+│   │   ├── BattleArena.jsx
+│   │   ├── CaseLibrary.jsx
+│   │   ├── Leaderboard.jsx
+│   │   └── Profile.jsx
 │   ├── api/
-│   │   └── apiClient.jsx        # LocalStorage-based API client
+│   │   └── apiClient.jsx
 │   ├── utils/
-│   │   ├── battleAnalyzer.js    # GPT-4o battle insights generation
-│   │   ├── pdfExtractor.js      # PDF → AI case extraction
-│   │   └── performanceAnalyzer.js # Real-time argument analysis
-│   └── lib/                     # UI utilities
+│   │   ├── battleAnalyzer.js
+│   │   ├── pdfExtractor.js
+│   │   └── performanceAnalyzer.js
+│   └── lib/
 ├── public/
-├── index.html                   # ElevenLabs script embed
-└── vercel.json                  # SPA routing config
+├── index.html
+└── vercel.json
 ```
 
-## Environment Variables
-
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `VITE_OPENROUTER_API_KEY` | OpenRouter API key for AI features | Yes |
-
-## Scripts
-
-- `npm run dev` - Start development server (http://localhost:5173)
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build locally
-
-## Features in Detail
-
-### Case Library
-- **Filter System**: Case type (Criminal, Civil, Constitutional) and difficulty (Easy, Medium, Hard, Expert)
-- **PDF Upload**: Drag-and-drop PDF documents to create new cases using AI extraction
-- **Case Management**: Delete cases with confirmation dialog
-- **Real-time Search**: Filter cases instantly as you type
-
-### Battle Arena (Trial Interface)
-- **Voice Conversation**: Interact with ElevenLabs AI Judge using natural speech
-- **Automatic Phase Progression**: 
-  - Opening Statements (3 turns) → Direct Examination (7 turns)
-  - Direct Examination → Cross Examination (7 turns)
-  - Cross Examination → Closing Arguments (7 turns)
-  - Closing Arguments → Case Complete (2 turns)
-- **AI Battle Insights**: GPT-4o automatically analyzes conversations every 10 messages
-  - Dynamic strategic notes based on your arguments
-  - AI-identified evidence references with relevance scores
-  - Contextual legal precedents specific to your conversation
-  - Purple badges indicate AI-generated content
-- **Real-time Performance Analysis**: AI evaluates your arguments every 3 seconds
-- **Smart Tools Panel**: View AI-generated battle insights prioritized over case defaults
-- **Performance Scoring**: Track logic, persuasiveness, precedent use, and clarity scores
-- **Phase Timeline**: Visual indicator of current trial phase
-
-### AI Integration
-- **Judge Agent** (ElevenLabs): Evaluates arguments and presides over trial
-  - Agent ID: agent_5001ka5q6f5sfbkt7v2ffdw17pkk
-  - Dynamic variables: case details, judge temperament, verdict status
-- **Battle Insights Generator** (GPT-4o): Analyzes conversation transcripts for tactical insights
-- **Performance Analyzer** (GPT-5.1): Real-time argument analysis
-- **PDF Extractor** (GPT-5.1): Extracts structured case data from uploaded documents
-- **Dynamic Context**: 20+ case-specific variables injected into AI conversations
-
-## License
-
-MIT
-
-## Support
-
-For issues and questions, please open a GitHub issue.
-
 ---
-
-Built with ⚖️ by your legal tech team
